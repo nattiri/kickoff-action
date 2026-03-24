@@ -32,7 +32,8 @@ export async function extractKeywords(text: string): Promise<string[]> {
     if (!Array.isArray(keywords)) return []
 
     return keywords.filter((k): k is string => typeof k === 'string')
-  } catch {
+  } catch (e) {
+    console.error('[Claude] extractKeywords error:', e)
     return []
   }
 }
