@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE() {
   const serviceClient = getServiceClient()
-  const { error } = await serviceClient.from('posts').delete().neq('id', '')
+  const { error } = await serviceClient.from('posts').delete().not('id', 'is', null)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
