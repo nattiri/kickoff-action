@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# kickoff-action
 
-## Getting Started
+事業部キックオフイベント用の行動宣言投稿・リアルタイムワードクラウド表示アプリ。
 
-First, run the development server:
+## 画面構成
+
+| パス | 説明 | 利用者 |
+|---|---|---|
+| `/` | 行動宣言投稿フォーム | 参加者（スマホ・PC） |
+| `/display` | ワードクラウドリアルタイム表示 | プロジェクター・大画面 |
+| `/admin` | 投稿一覧・削除・CSVエクスポート | 運営者 |
+
+## セットアップ
+
+### 1. 依存パッケージのインストール
+
+```bash
+npm install
+```
+
+### 2. 環境変数の設定
+
+```bash
+cp .env.local.example .env.local
+```
+
+`.env.local` を編集して各値を設定してください。
+
+### 3. Supabase のセットアップ
+
+[Supabase](https://supabase.com) でプロジェクトを作成し、SQL エディタで以下を実行:
+
+```sql
+create table posts (
+  id         uuid        primary key default gen_random_uuid(),
+  text       text        not null check (char_length(text) <= 140),
+  keywords   text[]      not null default '{}',
+  created_at timestamptz not null default now(),
+  session_id text        not null
+);
+
+alter publication supabase_realtime add table posts;
+
+alter table posts enable row level security;
+
+create policy "誰でも投稿を読める" on posts
+  for select using (true);
+
+create policy "誰でも投稿できる" on posts
+  for insert with check (true);
+```
+
+### 4. 開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Vercel へのデプロイ
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. このリポジトリを GitHub に push
+2. [Vercel](https://vercel.com) でリポジトリをインポート
+3. 環境変数（`.env.local.example` 参照）を Vercel ダッシュボードで設定
+4. デプロイ実行
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 技術スタック
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js 15](https://nextjs.org/) (App Router)
+- [Supabase](https://supabase.com/) — DB + Realtime
+- [Anthropic Claude API](https://www.anthropic.com/) — キーワード自動抽出
+- [react-wordcloud](https://github.com/chrisrzhou/react-wordcloud) — ワードクラウド描画
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Vercel](https://vercel.com/) — ホスティング
