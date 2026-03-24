@@ -1,26 +1,18 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import dynamic from 'next/dynamic'
 import { supabase, Post } from '@/lib/supabase'
-
-const ReactWordcloud = dynamic(() => import('react-wordcloud'), { ssr: false })
 
 type WordData = {
   text: string
   value: number
 }
 
-const options = {
-  rotations: 2,
-  rotationAngles: [-30, 30] as [number, number],
-  fontSizes: [16, 80] as [number, number],
-  fontFamily: 'Noto Sans JP, sans-serif',
-  padding: 4,
-  enableTooltip: false,
-  deterministic: false,
-  transitionDuration: 800,
-}
+const COLORS = [
+  '#3B82F6', '#8B5CF6', '#10B981', '#F59E0B',
+  '#EF4444', '#06B6D4', '#EC4899', '#84CC16',
+  '#F97316', '#6366F1', '#14B8A6', '#A855F7',
+]
 
 function buildWordData(posts: Post[]): WordData[] {
   const freq: Record<string, number> = {}
@@ -29,7 +21,14 @@ function buildWordData(posts: Post[]): WordData[] {
       freq[kw] = (freq[kw] ?? 0) + 1
     }
   }
-  return Object.entries(freq).map(([text, value]) => ({ text, value }))
+  return Object.entries(freq)
+    .map(([text, value]) => ({ text, value }))
+    .sort((a, b) => b.value - a.value)
+}
+
+function getFontSize(value: number, min: number, max: number): number {
+  if (max === min) return 48
+  return 20 + ((value - min) / (max - min)) * 72
 }
 
 export default function WordCloudDisplay() {
@@ -49,11 +48,9 @@ export default function WordCloudDisplay() {
 
     const channel = supabase
       .channel('posts-realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'posts' },
-        () => { fetchPosts() }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'posts' }, () => {
+        fetchPosts()
+      })
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
@@ -61,15 +58,30 @@ export default function WordCloudDisplay() {
 
   if (posts.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-400 text-xl">
+      <div className="flex items-center justify-center h-full text-gray-500 text-xl">
         まだ投稿がありません
       </div>
     )
   }
 
+  const values = words.map(w => w.value)
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+
   return (
-    <div className="w-full h-full">
-      <ReactWordcloud words={words} options={options} />
+    <div className="flex flex-wrap gap-x-6 gap-y-4 items-center justify-center p-8 h-full content-center">
+      {words.map((word, i) => (
+        <span
+          key={word.text}
+          className="font-bold transition-all duration-700 leading-tight"
+          style={{
+            fontSize: `${getFontSize(word.value, min, max)}px`,
+            color: COLORS[i % COLORS.length],
+          }}
+        >
+          {word.text}
+        </span>
+      ))}
     </div>
   )
 }
