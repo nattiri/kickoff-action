@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase, getServiceClient } from '@/lib/supabase'
 import { extractKeywords } from '@/lib/claude'
 
 export async function GET() {
@@ -44,4 +44,15 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json(data, { status: 201 })
+}
+
+export async function DELETE() {
+  const serviceClient = getServiceClient()
+  const { error } = await serviceClient.from('posts').delete().neq('id', '')
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ success: true })
 }

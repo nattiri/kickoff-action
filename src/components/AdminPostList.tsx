@@ -7,6 +7,7 @@ export default function AdminPostList() {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletingAll, setDeletingAll] = useState(false)
 
   const fetchPosts = useCallback(async () => {
     const { data } = await supabase
@@ -43,6 +44,14 @@ export default function AdminPostList() {
     setDeletingId(null)
   }
 
+  async function handleDeleteAll() {
+    if (!confirm(`全${posts.length}件の投稿を削除しますか？この操作は取り消せません。`)) return
+    setDeletingAll(true)
+    const res = await fetch('/api/posts', { method: 'DELETE' })
+    if (res.ok) setPosts([])
+    setDeletingAll(false)
+  }
+
   function handleExport() {
     window.location.href = '/api/export'
   }
@@ -55,12 +64,21 @@ export default function AdminPostList() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <p className="text-gray-600">投稿一覧（{posts.length} 件）</p>
-        <button
-          onClick={handleExport}
-          className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-        >
-          CSVエクスポート
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleDeleteAll}
+            disabled={deletingAll || posts.length === 0}
+            className="bg-red-600 hover:bg-red-700 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          >
+            {deletingAll ? '削除中...' : '全件削除'}
+          </button>
+          <button
+            onClick={handleExport}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
+          >
+            CSVエクスポート
+          </button>
+        </div>
       </div>
 
       {posts.length === 0 ? (
