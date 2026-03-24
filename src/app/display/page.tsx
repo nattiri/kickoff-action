@@ -7,12 +7,12 @@ export default function DisplayPage() {
         <h1 className="text-2xl font-bold tracking-wide">キックオフ 行動宣言</h1>
       </header>
 
-      <main className="flex-1 p-4">
+      <main className="flex-1 overflow-hidden">
         <WordCloudDisplay />
       </main>
 
       <footer className="py-2 px-6 text-center text-gray-500 text-sm bg-gray-800">
-        リアルタイム更新中
+        カテゴリ別表示 ・ リアルタイム更新中
       </footer>
     </div>
   )

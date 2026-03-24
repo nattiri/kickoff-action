@@ -4,6 +4,7 @@ export type Post = {
   id: string
   text: string
   keywords: string[]
+  category: string
   created_at: string
   session_id: string
 }

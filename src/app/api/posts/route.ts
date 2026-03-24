@@ -31,11 +31,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'セッションIDが不正です' }, { status: 400 })
   }
 
-  const keywords = await extractKeywords(text.trim())
+  const { category, keywords } = await extractKeywords(text.trim())
 
   const { data, error } = await supabase
     .from('posts')
-    .insert({ text: text.trim(), keywords, session_id: sessionId })
+    .insert({ text: text.trim(), keywords, category, session_id: sessionId })
     .select()
     .single()
 
