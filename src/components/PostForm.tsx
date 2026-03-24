@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 const SESSION_KEY = 'kickoff_posted'
 const SESSION_ID_KEY = 'kickoff_session_id'
@@ -19,16 +20,18 @@ export default function PostForm() {
   const [posted, setPosted] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const searchParams = useSearchParams()
+  const isTestMode = searchParams.get('test') === 'true'
 
   useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+    if (!isTestMode && sessionStorage.getItem(SESSION_KEY) === 'true') {
       setPosted(true)
     }
-  }, [])
+  }, [isTestMode])
 
   const remaining = 140 - text.length
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     if (!text.trim() || loading) return
 
@@ -49,8 +52,12 @@ export default function PostForm() {
         return
       }
 
-      sessionStorage.setItem(SESSION_KEY, 'true')
-      setPosted(true)
+      if (!isTestMode) {
+        sessionStorage.setItem(SESSION_KEY, 'true')
+        setPosted(true)
+      } else {
+        setText('')
+      }
     } catch {
       setError('通信エラーが発生しました。もう一度お試しください。')
     } finally {
