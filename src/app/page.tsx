@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import PostForm from '@/components/PostForm'
 
 export default function Home() {
@@ -10,7 +11,9 @@ export default function Home() {
 
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-lg bg-white rounded-2xl shadow-md p-8">
-          <PostForm />
+          <Suspense>
+            <PostForm />
+          </Suspense>
         </div>
       </main>
     </div>
