@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { generateMockPosts } from '@/lib/mockData'
 import { Post } from '@/lib/supabase'
 import { getCategoryColor } from '@/lib/categoryColor'
 import LiveFeedPanel from './LiveFeedPanel'
+import MilestoneCelebration from './MilestoneCelebration'
 
 function groupByCategory(posts: Post[]): Map<string, Post[]> {
   const map = new Map<string, Post[]>()
@@ -22,9 +23,17 @@ export default function DemoTabs() {
   const [activeTab, setActiveTab] = useState<Tab>('category')
   const posts = useMemo(() => generateMockPosts(380), [])
   const grouped = useMemo(() => groupByCategory(posts), [posts])
+  const [demoCount, setDemoCount] = useState(0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDemoCount(posts.length), 800)
+    return () => clearTimeout(timer)
+  }, [posts.length])
 
   return (
-    <div className="flex flex-col h-full">
+    <>
+      <MilestoneCelebration count={demoCount} />
+      <div className="flex flex-col h-full">
       <div className="flex items-center justify-between border-b border-white/10 shrink-0 px-2 bg-white/5">
         <div className="flex">
           <button
@@ -126,5 +135,6 @@ export default function DemoTabs() {
         <LiveFeedPanel />
       </div>
     </div>
+    </>
   )
 }
