@@ -1,12 +1,16 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Anthropic from '@anthropic-ai/sdk'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 
 export async function extractKeywords(text: string): Promise<{ category: string; keywords: string[] }> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
-    const result = await model.generateContent(
-      `以下の行動宣言を分析して、カテゴリと主要キーワードを抽出してください。
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 256,
+      messages: [
+        {
+          role: 'user',
+          content: `以下の行動宣言を分析して、カテゴリと主要キーワードを抽出してください。
 以下のJSON形式のみを返してください。
 
 行動宣言: 「${text}」
@@ -14,11 +18,15 @@ export async function extractKeywords(text: string): Promise<{ category: string;
 返答形式:
 {"category": "カテゴリ名（4〜10文字）", "keywords": ["キーワード1", "キーワード2", "キーワード3"]}
 
-カテゴリ例: "顧客対応", "業務改善", "チームワーク", "目標達成", "スキルアップ", "情報共有"`
-    )
+カテゴリ例: "顧客対応", "業務改善", "チームワーク", "目標達成", "スキルアップ", "情報共有"`,
+        },
+      ],
+    })
 
-    const responseText = result.response.text()
-    const match = responseText.match(/\{.*?\}/s)
+    const content = message.content[0]
+    if (content.type !== 'text') return { category: 'その他', keywords: [] }
+
+    const match = content.text.match(/\{.*?\}/s)
     if (!match) return { category: 'その他', keywords: [] }
 
     const parsed = JSON.parse(match[0])
@@ -29,7 +37,7 @@ export async function extractKeywords(text: string): Promise<{ category: string;
         : [],
     }
   } catch (e) {
-    console.error('[Gemini] extractKeywords error:', e)
+    console.error('[Claude] extractKeywords error:', e)
     return { category: 'その他', keywords: [] }
   }
 }
