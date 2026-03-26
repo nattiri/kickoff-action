@@ -14,12 +14,13 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const header = 'id,text,keywords,created_at\n'
+  const header = 'id,text,category,keywords,created_at\n'
   const rows = (data as Post[])
     .map((post) => {
       const text = `"${post.text.replace(/"/g, '""')}"`
+      const category = `"${(post.category ?? '').replace(/"/g, '""')}"`
       const keywords = `"${post.keywords.join(',')}"`
-      return `${post.id},${text},${keywords},${post.created_at}`
+      return `${post.id},${text},${category},${keywords},${post.created_at}`
     })
     .join('\n')
 
