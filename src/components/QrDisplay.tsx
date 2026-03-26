@@ -1,9 +1,16 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 
 export default function QrDisplay() {
-  const url = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin
+  const [url, setUrl] = useState(process.env.NEXT_PUBLIC_APP_URL ?? '')
+
+  useEffect(() => {
+    if (!url) setUrl(window.location.origin)
+  }, [url])
+
+  if (!url) return null
 
   return (
     <div className="p-6 bg-white rounded-3xl shadow-2xl border border-gray-100">
