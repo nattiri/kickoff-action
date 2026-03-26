@@ -3,19 +3,7 @@
 import { useState, useMemo } from 'react'
 import { generateMockPosts } from '@/lib/mockData'
 import { Post } from '@/lib/supabase'
-
-const CATEGORY_COLORS = [
-  { bg: 'bg-blue-600', text: 'text-white' },
-  { bg: 'bg-purple-600', text: 'text-white' },
-  { bg: 'bg-green-600', text: 'text-white' },
-  { bg: 'bg-orange-500', text: 'text-white' },
-  { bg: 'bg-pink-600', text: 'text-white' },
-  { bg: 'bg-teal-600', text: 'text-white' },
-  { bg: 'bg-indigo-600', text: 'text-white' },
-  { bg: 'bg-red-600', text: 'text-white' },
-  { bg: 'bg-yellow-500', text: 'text-white' },
-  { bg: 'bg-cyan-600', text: 'text-white' },
-]
+import { getCategoryColor } from '@/lib/categoryColor'
 
 function groupByCategory(posts: Post[]): Map<string, Post[]> {
   const map = new Map<string, Post[]>()
@@ -36,7 +24,6 @@ export default function DemoTabs() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* タブ + カウンター */}
       <div className="flex items-center justify-between border-b border-gray-700 shrink-0 px-2">
         <div className="flex">
           <button
@@ -69,8 +56,8 @@ export default function DemoTabs() {
       {activeTab === 'category' && (
         <div className="flex-1 overflow-y-auto p-6">
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-            {[...grouped.entries()].map(([category, catPosts], i) => {
-              const color = CATEGORY_COLORS[i % CATEGORY_COLORS.length]
+            {[...grouped.entries()].map(([category, catPosts]) => {
+              const color = getCategoryColor(category)
               return (
                 <div
                   key={category}
@@ -82,7 +69,7 @@ export default function DemoTabs() {
                       {catPosts.length}件
                     </span>
                   </div>
-                  <ul className="divide-y divide-gray-100">
+                  <ul className="divide-y divide-gray-100 max-h-80 overflow-y-auto">
                     {catPosts.map((post) => (
                       <li key={post.id} className="px-4 py-3 text-gray-800 text-sm leading-relaxed">
                         {post.text}
@@ -113,7 +100,7 @@ export default function DemoTabs() {
                   <tr key={post.id} className="text-gray-200 hover:bg-gray-700 transition-colors">
                     <td className="px-4 py-3 leading-relaxed">{post.text}</td>
                     <td className="px-4 py-3">
-                      <span className="bg-blue-800 text-blue-200 text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                      <span className={`${getCategoryColor(post.category).badge} text-xs px-2 py-1 rounded-full whitespace-nowrap`}>
                         {post.category}
                       </span>
                     </td>

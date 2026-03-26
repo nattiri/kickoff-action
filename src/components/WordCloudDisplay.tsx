@@ -2,17 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { supabase, Post } from '@/lib/supabase'
-
-const CATEGORY_COLORS = [
-  { bg: 'bg-blue-600', text: 'text-white' },
-  { bg: 'bg-purple-600', text: 'text-white' },
-  { bg: 'bg-green-600', text: 'text-white' },
-  { bg: 'bg-orange-500', text: 'text-white' },
-  { bg: 'bg-pink-600', text: 'text-white' },
-  { bg: 'bg-teal-600', text: 'text-white' },
-  { bg: 'bg-indigo-600', text: 'text-white' },
-  { bg: 'bg-red-600', text: 'text-white' },
-]
+import { getCategoryColor } from '@/lib/categoryColor'
 
 function groupByCategory(posts: Post[]): Map<string, Post[]> {
   const map = new Map<string, Post[]>()
@@ -59,13 +49,11 @@ export default function WordCloudDisplay() {
     )
   }
 
-  const categories = [...grouped.entries()]
-
   return (
     <div className="h-full overflow-y-auto p-6">
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-        {categories.map(([category, catPosts], i) => {
-          const color = CATEGORY_COLORS[i % CATEGORY_COLORS.length]
+        {[...grouped.entries()].map(([category, catPosts]) => {
+          const color = getCategoryColor(category)
           return (
             <div
               key={category}
@@ -77,7 +65,7 @@ export default function WordCloudDisplay() {
                   {catPosts.length}件
                 </span>
               </div>
-              <ul className="divide-y divide-gray-100">
+              <ul className="divide-y divide-gray-100 max-h-80 overflow-y-auto">
                 {catPosts.map((post) => (
                   <li key={post.id} className="px-4 py-3 text-gray-800 text-sm leading-relaxed">
                     {post.text}

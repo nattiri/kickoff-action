@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { supabase, Post } from '@/lib/supabase'
+import { getCategoryColor } from '@/lib/categoryColor'
 
 export default function PostListDisplay() {
   const [posts, setPosts] = useState<Post[]>([])
@@ -50,7 +51,7 @@ export default function PostListDisplay() {
                 <tr key={post.id} className="text-gray-200 hover:bg-gray-700 transition-colors">
                   <td className="px-4 py-3 leading-relaxed">{post.text}</td>
                   <td className="px-4 py-3">
-                    <span className="bg-blue-800 text-blue-200 text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                    <span className={`${getCategoryColor(post.category || 'その他').badge} text-xs px-2 py-1 rounded-full whitespace-nowrap`}>
                       {post.category || 'その他'}
                     </span>
                   </td>
