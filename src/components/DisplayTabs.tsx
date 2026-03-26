@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import WordCloudDisplay from './WordCloudDisplay'
 import PostListDisplay from './PostListDisplay'
+import LiveFeedPanel from './LiveFeedPanel'
+import MilestoneCelebration from './MilestoneCelebration'
 
 type Tab = 'category' | 'list'
 
@@ -59,45 +61,51 @@ export default function DisplayTabs() {
   }, [fetchCount])
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between border-b border-white/10 shrink-0 px-2 bg-white/5">
-        <div className="flex">
-          <button
-            onClick={() => setActiveTab('category')}
-            className={`px-6 py-3 text-sm font-bold transition-colors ${
-              activeTab === 'category'
-                ? 'text-white border-b-2 border-blue-400'
-                : 'text-white/40 hover:text-white/70'
-            }`}
-          >
-            カテゴリ別
-          </button>
-          <button
-            onClick={() => setActiveTab('list')}
-            className={`px-6 py-3 text-sm font-bold transition-colors ${
-              activeTab === 'list'
-                ? 'text-white border-b-2 border-blue-400'
-                : 'text-white/40 hover:text-white/70'
-            }`}
-          >
-            投稿一覧
-          </button>
+    <>
+      <MilestoneCelebration count={count} />
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between border-b border-white/10 shrink-0 px-2 bg-white/5">
+          <div className="flex">
+            <button
+              onClick={() => setActiveTab('category')}
+              className={`px-6 py-3 text-sm font-bold transition-colors ${
+                activeTab === 'category'
+                  ? 'text-white border-b-2 border-blue-400'
+                  : 'text-white/40 hover:text-white/70'
+              }`}
+            >
+              カテゴリ別
+            </button>
+            <button
+              onClick={() => setActiveTab('list')}
+              className={`px-6 py-3 text-sm font-bold transition-colors ${
+                activeTab === 'list'
+                  ? 'text-white border-b-2 border-blue-400'
+                  : 'text-white/40 hover:text-white/70'
+              }`}
+            >
+              投稿一覧
+            </button>
+          </div>
+          <div className="pr-4 text-white/60 text-sm flex items-center gap-1">
+            投稿数：
+            <span
+              key={countKey}
+              className="text-white font-bold text-2xl tabular-nums animate-count-up"
+            >
+              {animatedCount}
+            </span>
+            <span className="text-white/60"> 件</span>
+          </div>
         </div>
-        <div className="pr-4 text-white/60 text-sm flex items-center gap-1">
-          投稿数：
-          <span
-            key={countKey}
-            className="text-white font-bold text-2xl tabular-nums animate-count-up"
-          >
-            {animatedCount}
-          </span>
-          <span className="text-white/60"> 件</span>
-        </div>
-      </div>
 
-      <div className="flex-1 overflow-hidden">
-        {activeTab === 'category' ? <WordCloudDisplay /> : <PostListDisplay />}
+        <div className="flex-1 overflow-hidden flex">
+          <div className="flex-1 overflow-hidden">
+            {activeTab === 'category' ? <WordCloudDisplay /> : <PostListDisplay />}
+          </div>
+          <LiveFeedPanel />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
