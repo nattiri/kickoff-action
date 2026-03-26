@@ -53,3 +53,26 @@ body {
 .animate-milestone {
   animation: milestoneIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
+
+/* ホバー時のみ出現するスクロールバー */
+.scrollbar-hover::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-hover::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-hover::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+  transition: background 0.3s ease;
+}
+.scrollbar-hover:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+.scrollbar-hover {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.scrollbar-hover:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}

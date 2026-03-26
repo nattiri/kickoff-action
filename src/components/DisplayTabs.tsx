@@ -103,6 +103,7 @@ export default function DisplayTabs() {
           <div className="flex-1 overflow-hidden">
             {activeTab === 'category' ? <WordCloudDisplay /> : <PostListDisplay />}
           </div>
+          <div className="w-px bg-gradient-to-b from-transparent via-blue-500/50 to-transparent shrink-0" />
           <LiveFeedPanel />
         </div>
       </div>

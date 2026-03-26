@@ -34,7 +34,7 @@ export default function PostListDisplay() {
 
   return (
     <div className="h-full flex flex-col p-4 overflow-hidden">
-      <div className="flex-1 overflow-y-auto rounded-lg border border-gray-700">
+      <div className="flex-1 overflow-y-auto rounded-xl border border-white/10 scrollbar-hover">
         {posts.length === 0 ? (
           <p className="text-gray-500 text-center py-12">まだ投稿がありません</p>
         ) : (

@@ -73,7 +73,7 @@ export default function WordCloudDisplay() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6">
+    <div className="h-full overflow-y-auto p-6 scrollbar-hover">
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
         {[...grouped.entries()].map(([category, catPosts]) => {
           const color = getCategoryColor(category)
@@ -88,7 +88,7 @@ export default function WordCloudDisplay() {
                   {catPosts.length}件
                 </span>
               </div>
-              <ul className="divide-y divide-white/5 max-h-80 overflow-y-auto bg-white/5 backdrop-blur-sm">
+              <ul className="divide-y divide-white/5 max-h-80 overflow-y-auto bg-white/5 backdrop-blur-sm scrollbar-hover">
                 {catPosts.map((post) => (
                   <li
                     key={post.id}

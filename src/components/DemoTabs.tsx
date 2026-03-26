@@ -54,7 +54,7 @@ export default function DemoTabs() {
 
       {/* カテゴリ別タブ */}
       {activeTab === 'category' && (
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 scrollbar-hover">
           <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 space-y-5">
             {[...grouped.entries()].map(([category, catPosts]) => {
               const color = getCategoryColor(category)
@@ -69,7 +69,7 @@ export default function DemoTabs() {
                       {catPosts.length}件
                     </span>
                   </div>
-                  <ul className="divide-y divide-white/5 max-h-80 overflow-y-auto bg-white/5 backdrop-blur-sm">
+                  <ul className="divide-y divide-white/5 max-h-80 overflow-y-auto bg-white/5 backdrop-blur-sm scrollbar-hover">
                     {catPosts.map((post) => (
                       <li key={post.id} className="px-4 py-3 text-white/90 text-sm leading-relaxed">
                         {post.text}
@@ -86,7 +86,7 @@ export default function DemoTabs() {
       {/* 投稿一覧タブ */}
       {activeTab === 'list' && (
         <div className="flex-1 flex flex-col p-4 overflow-hidden">
-          <div className="flex-1 overflow-y-auto rounded-xl border border-white/10">
+          <div className="flex-1 overflow-y-auto rounded-xl border border-white/10 scrollbar-hover">
             <table className="w-full text-sm">
               <thead className="bg-white/10 text-white/80 sticky top-0 backdrop-blur-sm">
                 <tr>

@@ -25,12 +25,12 @@ export default function LiveFeedPanel() {
   }, [])
 
   return (
-    <div className="w-72 border-l border-white/10 flex flex-col shrink-0">
+    <div className="w-72 flex flex-col shrink-0">
       <div className="px-4 py-3 border-b border-white/10 bg-white/5 flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         <span className="text-sm font-bold text-white/80 tracking-widest">LIVE</span>
       </div>
-      <div className="flex-1 overflow-hidden p-3 space-y-2 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-hover">
         {feed.length === 0 ? (
           <p className="text-white/30 text-xs text-center mt-6">新着投稿を待機中...</p>
         ) : (
