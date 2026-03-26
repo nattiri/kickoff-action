@@ -33,10 +33,6 @@ export default function PostListDisplay() {
 
   return (
     <div className="h-full flex flex-col p-4 overflow-hidden">
-      <p className="text-gray-300 text-sm mb-3 shrink-0">
-        総件数: <span className="font-bold text-white text-lg">{posts.length}</span> 件
-      </p>
-
       <div className="flex-1 overflow-y-auto rounded-lg border border-gray-700">
         {posts.length === 0 ? (
           <p className="text-gray-500 text-center py-12">まだ投稿がありません</p>
